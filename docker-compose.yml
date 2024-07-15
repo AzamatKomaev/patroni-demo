@@ -1,0 +1,41 @@
+services:
+  app:
+    image: azamatkomaev/postcreator:latest
+    container_name: app
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: jdbc:postgresql://main:5432/db
+      DATABASE_USERNAME: user
+      DATABASE_PASSWORD: 1234
+    depends_on:
+      - main
+    networks:
+      - patroni-cluster
+
+  main:
+    image: postgres:15.7
+    container_name: main
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: db
+    command: |
+      -c 'config_file=/etc/postgresql/postgresql.conf'
+    volumes:
+      - ./data/main:/var/lib/postgresql/data
+      - ./config/main.conf:/etc/postgresql/postgresql.conf
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "db" ]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+    networks:
+      - patroni-cluster
+
+networks:
+  patroni-cluster:

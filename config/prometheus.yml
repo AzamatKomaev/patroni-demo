@@ -1,0 +1,11 @@
+global:
+  scrape_interval: 15s
+  external_labels:
+    monitor: 'patroni-monitor'
+
+scrape_configs:
+  - job_name: 'prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+        labels: {}
