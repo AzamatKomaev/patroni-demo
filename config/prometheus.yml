@@ -9,3 +9,5 @@ scrape_configs:
     static_configs:
       - targets: ['postgres-exporter:9187']
         labels: {}
+      - targets: ['postgres-exporter-replica1:9187']
+        labels: {}

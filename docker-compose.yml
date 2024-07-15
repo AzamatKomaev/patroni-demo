@@ -1,3 +1,22 @@
+x-postgres-common:
+  &postgres-common
+  image: postgres:15.7
+  restart: always
+  command: |
+    -c 'config_file=/etc/postgresql/postgresql.conf'
+  environment:
+    POSTGRES_USER: user
+    POSTGRES_PASSWORD: 1234
+    POSTGRES_DB: db
+  healthcheck:
+    test: [ "CMD", "pg_isready", "-U", "db" ]
+    interval: 10s
+    retries: 5
+    start_period: 5s
+  networks:
+    - patroni-cluster
+
+
 services:
   app:
     image: azamatkomaev/postcreator:latest
@@ -15,27 +34,22 @@ services:
       - patroni-cluster
 
   main:
-    image: postgres:15.7
+    <<: *postgres-common
     container_name: main
-    restart: always
     ports:
       - 5432:5432
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: 1234
-      POSTGRES_DB: db
-    command: |
-      -c 'config_file=/etc/postgresql/postgresql.conf'
     volumes:
       - ./data/main:/var/lib/postgresql/data
       - ./config/main.conf:/etc/postgresql/postgresql.conf
-    healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "db" ]
-      interval: 10s
-      retries: 5
-      start_period: 5s
-    networks:
-      - patroni-cluster
+
+  replica1:
+    <<: *postgres-common
+    container_name: replica1
+    ports:
+      - 5433:5432
+    volumes:
+      - ./data/replica1:/var/lib/postgresql/data
+      - ./config/replica1.conf:/etc/postgresql/postgresql.conf
 
 networks:
   patroni-cluster:

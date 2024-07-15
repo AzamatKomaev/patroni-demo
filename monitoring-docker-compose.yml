@@ -40,6 +40,18 @@ services:
     networks:
       - patroni-cluster
 
+  postgres-exporter-replica1:
+    image: quay.io/prometheuscommunity/postgres-exporter:v0.15.0
+    container_name: postgres-exporter-replica1
+    environment:
+      DATA_SOURCE_URI: replica1:5432/db?sslmode=disable
+      DATA_SOURCE_USER: user
+      DATA_SOURCE_PASS: 1234
+    ports:
+      - '9188:9187'
+    networks:
+      - patroni-cluster
+
 volumes:
   prometheus-data: {}
   grafana-data: {}
