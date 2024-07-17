@@ -5,6 +5,7 @@ x-postgres-common:
   command: |
     -c 'config_file=/etc/postgresql/postgresql.conf'
   environment:
+    &postgres-common-env
     POSTGRES_USER: user
     POSTGRES_PASSWORD: 1234
     POSTGRES_DB: db
@@ -40,13 +41,18 @@ services:
       - 5432:5432
     volumes:
       - ./data/main:/var/lib/postgresql/data
+      - ./data/archive:/wal-arch
       - ./config/main.conf:/etc/postgresql/postgresql.conf
+      - ./config/pg_hba.conf:/etc/postgresql/pg_hba.conf
 
   replica1:
     <<: *postgres-common
     container_name: replica1
     ports:
       - 5433:5432
+    environment:
+      <<: *postgres-common-env
+      PGDATA: /var/lib/postgresql/data
     volumes:
       - ./data/replica1:/var/lib/postgresql/data
       - ./config/replica1.conf:/etc/postgresql/postgresql.conf

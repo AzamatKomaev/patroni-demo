@@ -29,6 +29,7 @@ while True:
     title = fake.name()
     description = fake.text()
     author_name = f"{title} {fake.user_name()}"
+    print("FFF")
     response = create_post(title, description, author_name)
     print(response)
     # time.sleep(0.01)
