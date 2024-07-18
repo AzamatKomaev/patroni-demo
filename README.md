@@ -14,6 +14,7 @@ $ docker compose -f ./monitoring-docker-compose.yml up -d
 After that you can navigate to http://localhost:3000, add Prometheus data source and import dashboards to monitor PostgreSQL instances.
 
 ### Running main + replicas (Without Patroni)
+![PostgreSQLReplication](https://github.com/user-attachments/assets/1653df3c-f3dd-424b-bea9-5f542935945c)
 Run main docker-compose.yml:
 ```shell
 $ git checkout async-and-sync-replicas-replication
