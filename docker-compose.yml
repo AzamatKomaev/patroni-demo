@@ -46,16 +46,24 @@ services:
       - ./config/pg_hba.conf:/etc/postgresql/pg_hba.conf
 
   replica1:
+    ### ASYNC REPLICA
     <<: *postgres-common
     container_name: replica1
     ports:
       - 5433:5432
-    environment:
-      <<: *postgres-common-env
-      PGDATA: /var/lib/postgresql/data
     volumes:
       - ./data/replica1:/var/lib/postgresql/data
       - ./config/replica1.conf:/etc/postgresql/postgresql.conf
+
+  replica2:
+    ### SYNC REPLICA
+    <<: *postgres-common
+    container_name: replica2
+    ports:
+      - 5434:5432
+    volumes:
+      - ./data/replica2:/var/lib/postgresql/data
+      - ./config/replica2.conf:/etc/postgresql/postgresql.conf
 
 networks:
   patroni-cluster:
